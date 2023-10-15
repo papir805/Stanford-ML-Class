@@ -97,7 +97,7 @@ DecisionBoundaryDisplay.from_estimator(k_neighbors_classifier, X_test, alpha=0.4
 ax.scatter(yesses['x'], yesses['y'], c=yesses['color'], s=20, edgecolor="k", label='yes')
 ax.scatter(nos['x'], nos['y'], c=nos['color'], s=20, edgecolor="k", label='no')
 ax.legend(title='binary variable')
-ax.set_title(f'Logistic Regression Classifier $(Accuracy = {accuracy:.2f})$')
+ax.set_title(f'K Nearest Neighbor Classifier $(Accuracy = {accuracy:.2f})$')
 plt.show()
 
 # %%
