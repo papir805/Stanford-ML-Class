@@ -22,6 +22,7 @@ import pandas as pd
 from sklearn import tree
 from sklearn.model_selection import train_test_split
 from sklearn.inspection import DecisionBoundaryDisplay
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 import matplotlib.pyplot as plt
 
@@ -61,7 +62,7 @@ decision_tree_classifier = decision_tree_classifier.fit(X_train, y_train)
 
 # %%
 fig, ax = plt.subplots(1,1)
-tree.plot_tree(decision_tree_classifier, ax=ax);
+tree.plot_tree(decision_tree_classifier, ax=ax, impurity=False);
 
 # %% [markdown]
 # # Visualizing Decision Tree using Graphviz
@@ -70,7 +71,8 @@ tree.plot_tree(decision_tree_classifier, ax=ax);
 dot_data = tree.export_graphviz(decision_tree_classifier, out_file=None,
                                 feature_names=feat_names,
                                 class_names=class_names,
-                                filled=True, rounded=True)
+                                filled=True, rounded=True,
+                                impurity=False)
 graph = graphviz.Source(dot_data)
 graph.render("../images/test")
 
@@ -120,6 +122,17 @@ ax.scatter(yesses['x'], yesses['y'], c=yesses['color'], s=20, edgecolor="k", lab
 ax.scatter(nos['x'], nos['y'], c=nos['color'], s=20, edgecolor="k", label='no')
 ax.legend(title='binary variable')
 ax.set_title(f'Decision Tree Classifier $(Accuracy = {accuracy:.2f})$')
+plt.show()
+
+# %% [markdown]
+# # Confusion Matrix
+
+# %%
+cm = confusion_matrix(y_test, predictions,
+                      labels=class_names,
+                      normalize='all')
+cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
+cm_display.plot(cmap='Greens')
 plt.show()
 
 # %%

@@ -41,8 +41,8 @@ plt.plot(data1[:,0], data1[:,1], 'o', markeredgewidth=0.5, markeredgecolor='blac
 # # data2
 
 # %%
-mean = np.array([2.5,-2])
-cov = np.array([[1, 0], [0, 1]])
+mean = np.array([2,-2])
+cov = np.array([[2, 0], [0, 2]])
 distr = multivariate_normal(cov=cov, mean=mean, seed=random_seed)
 data2 = distr.rvs(size=sample_size)
 
@@ -76,3 +76,5 @@ plt.savefig("../images/scatter.png", bbox_inches='tight');
 # %%
 df = pd.DataFrame({'x':joined_x, 'y':joined_y, 'type':types})
 df.to_csv("../data/toy_data.csv")
+
+# %%

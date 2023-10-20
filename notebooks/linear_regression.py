@@ -105,3 +105,5 @@ plt.tight_layout()
 
 # %%
 from statsmodels.formula.api import ols
+
+# %%

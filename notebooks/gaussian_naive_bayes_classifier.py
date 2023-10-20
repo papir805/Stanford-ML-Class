@@ -22,6 +22,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.inspection import DecisionBoundaryDisplay
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 import matplotlib.pyplot as plt
 
@@ -98,6 +99,17 @@ ax.scatter(yesses['x'], yesses['y'], c=yesses['color'], s=20, edgecolor="k", lab
 ax.scatter(nos['x'], nos['y'], c=nos['color'], s=20, edgecolor="k", label='no')
 ax.legend(title='binary variable')
 ax.set_title(f'Naive Bayes Classifier $(Accuracy = {accuracy:.2f})$')
+plt.show()
+
+# %% [markdown]
+# # Confusion Matrix
+
+# %%
+cm = confusion_matrix(y_test, predictions,
+                      labels=class_names,
+                      normalize='all')
+cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
+cm_display.plot(cmap='Greens')
 plt.show()
 
 # %%
