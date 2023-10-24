@@ -44,7 +44,7 @@ df.head()
 #
 # This leaves two options, either wait for a sufficient amount of new data to come in and use it to verify the model's accuracy, or parition your dataset into a training set and a testing set where the training set can be used to build the model and the testing set will only be used to verify the accuracy.  
 #
-# While it would be reasonable to think that the more data points you have when training the model, the better its performance will be, there tend to be diminishing returns.  As it turns out, as long as your dataset is sufficiently large, performing a train/test split can yield quite good results and is by far the quickest option
+# While it would be reasonable to think that the more data points you have when training the model, the better its performance will be, there tend to be diminishing returns.  As it turns out, as long as your dataset is sufficiently large, performing a train/test split can yield quite good results and is by far the quickest option.
 
 # %%
 # Specify which column in the df is to be used as the input feature to the linear regression model
@@ -69,7 +69,9 @@ X_train, X_test, y_train, y_test = train_test_split(df[x_label].values,
 #
 # In this form, the model will look like your friendly linear function from algebra class in high school: $$y=m \cdot x+b$$
 #
-# However, the model is more commonly written in this form: $\hat y = \beta_1 \cdot x + \beta_0$, where $\hat y$ represents the **predicted output** and $\beta_1$ and $\beta_0$ represent the **estimated** slope and **estimated** y-intercept, respectively.
+# However, because most datasets are incomplete, it's unlikely one will ever have enough information to create a linear model that's the most accurate representation of your data.  That being said, the goal isn't to go for exactness or perfection, but opt for estimation instead, which is why the model is more commonly written in this form: $$\hat y = \beta_1 \cdot x + \beta_0$$
+#
+# where $\hat y$ represents the **predicted output** and $\beta_1$ and $\beta_0$ represent the **estimated** slope and **estimated** y-intercept, respectively.  
 
 # %%
 # Create linear regression object
@@ -89,7 +91,50 @@ print(f"y-intercept: {intercept}")
 # %% [markdown]
 # Based on the training data, the model has estimated the slope and y-intercept.  Using the values from above, the model will look like: $$\hat y = -0.40024179x - 0.58611954$$
 #
-# The negative slope indicates a negative relationship between x and y, meaning when x is increased by 1, y decreases by 0.40024179.  The y-intercept signifies that when x is 0, y is -0.58611954.
+# The negative slope indicates a negative relationship between x and y, meaning when x is increased by 1, y decreases by 0.40024179.  The y-intercept signifies that when x is 0, y is estimated to be -0.58611954.
+
+# %% [markdown]
+# ## Making Predictions
+#
+# Now that the model has been trained, it can be used to make predictions.
+
+# %%
+# Make predictions using the already seen training data
+training_predictions = lin_reg_model.predict(X_train)
+
+# Store results in dataframe
+train_results_df = pd.DataFrame({'x':X_train.flatten(), 
+                                'y_true':y_train.flatten(), 
+                                'y_predicted':training_predictions.flatten()})
+train_results_df.head()
+
+# %% [markdown]
+# Remembering the linear model from earlier, the train_results_df from above can be explained.  For the first entry, $x=-1.280853$.  Plugging this value into the model would look as follows: 
+# $$\hat y = -0.40024179x - 0.586119541$$
+# $$\hat y = -0.40024179(-1.20853) - 0.58611954$$
+# $$\hat y = -0.073468$$
+#
+# The result is the predicted y value of -0.073468, however the true y value was $y=0.107492$.  Doing this for every x value leads to many $(x, \hat y)$ pairs, an x value and a *predicted* y value, which can then be graphed and compared to the $(x, y)$ pairs from the dataset itself, representing the x value and the *true* y value.
+
+# %% [markdown]
+# ## Visualizing the Linear Model's Fit
+#
+# In the graph below, each point on the red line represents the $(x, \hat y)$ pairs of predicted values, while the blue dots represent the $(x, y)$ pairs of the actal values from the dataset itself.  
+
+# %%
+# Number of sample data points in training data
+train_sample_size = X_train.shape[0]
+
+# Create figure and axis for graphing
+fig, ax = plt.subplots(1, 1)
+
+# First axis - Scatter plot of training data and linear model's trend line
+ax.scatter(X_train, y_train, label='Actual')
+ax.set_xlabel(x_label)
+ax.set_ylabel(y_label)
+ax.set_title(f'Training Data: Actual vs. Predicted Values ($n={train_sample_size})$')
+ax.plot(X_train, training_predictions, color='r', label='predicted', alpha=0.6)
+ax.legend();
 
 # %% [markdown]
 # ## Evaluating the strength of the relationship
@@ -107,17 +152,14 @@ print(f"r-value (correlation coefficient): {train_r_value:.4f}")
 # In the training data, the r-value of -0.3949 indicates a weak negative correlation between x and y.
 
 # %% [markdown]
-# ## Making predictions and Checking Error
+# ## Checking Error
 #
-# With the linear regression model built and trained, it's time to start evaluating the model's performance.  First, performance should be evaluated on the training data.  The model can be used to make predictions and then the residuals can be calculated, which represent the difference between the true y value and the predicted y value: $$\text{residual} = y - \hat y$$ 
+# With the linear regression model built and trained, it's time to start evaluating the model's performance.  First, performance should be evaluated on the training data.  Using the predictions from earlier, the residuals can be calculated, which represent the difference between the true y value and the predicted y value: $$\text{residual} = y - \hat y$$ 
 #
 # This calculation yields the error in each prediction and is a way to evaluate the
 # performance of the model.  
 
 # %%
-# Make predictions using the already seen training data
-training_predictions = lin_reg_model.predict(X_train)
-
 # Calculate the error (residual) for each prediction
 training_residuals = y_train - training_predictions
 
@@ -129,25 +171,19 @@ train_results_df = pd.DataFrame({'x':X_train.flatten(),
 train_results_df.head()
 
 # %% [markdown]
-# Remembering the linear model from earlier, the results_df above can be explained.
-# For the first entry, $x=-1.280853$.  Plugging this value into the model would look as follows: 
-# $$\hat y = -0.40024179x - 0.586119541$$
-# $$\hat y = -0.40024179(-1.20853) - 0.58611954$$
-# $$\hat y = -0.073468$$
-#
-# The result is the predicted y value of -0.073468, however the true y value was $y=0.107492$.  To determine the error in the prediction, calculate the residual:
+# Earlier, we plugged in $x=-1.280853$ to the model and it returned $\hat y = -0.073468$, the predicted y value, however the true y value was 0.107492.  To determine the error in the prediction, calculate the residual as follows:
 # $$\text{residual} = y - \hat y$$
 # $$\text{residual} = 0.107492 - (-0.073468)$$
 # $$\text{residual} = 0.180961$$
 #
-# When $x=-1.280853$, the true y-value was 0.180961 above the prediction.  In other words, the model under predicted by 0.180961.
+# When $x=-1.280853$, the residual indicates the error in the prediction was 0.180961.  Essentially, the true y-value was 0.180961 above the prediction, or in other words, the model under predicted by 0.180961.
 
 # %% [markdown]
 # ### Evaluating performance metrics
 #
 # The root mean squared (RMSE) error represents the average amount of error in a prediction, therefore the lower the RMSE, the lower the error.  
 #
-# The r2_score, otherwise known as the coefficient of determination, represents the percent of variation in y that is predictable by x. A value closer to 1 (100%) indicates that the model is using x to makes perfect predictions about y, whereas a value of 0 indicates x has no effect on y and a linear model between x and y is useless.
+# The r2_score, otherwise known as the coefficient of determination, represents the percent of variation in y that is predictable by x. A value closer to 1 (100%) indicates that the model is using x to makes perfect predictions about y because x is the only piece of information needed to understand y.  On the other hand, a value of 0 (0%) indicates x has no relationship with y because x is meaningless in regards to understanding or predicting y.  In a case like that, a linear model between x and y would be useless since x and y have no relationship that can be used to make predictions.
 
 # %%
 # The root mean squared error
@@ -164,16 +200,11 @@ print(f"r2 score (coefficient of determination): {training_r2_score*100:.2f}%")
 # Because the relationship between x and y in the training data is weak, x only explains about 15.60% of the changes seen in y.  While this seems low and is certainly far from ideal, it's often better than nothing.
 
 # %% [markdown]
-# ## Visualizing the Linear Model's fit
+# ## Visualizing the Linear Model's fit with Residuals
 #
-# Another important step when evaluating a model's performance is to produce a visualization.  For linear regression, we can use a scatter plot to display the training data and then graph the linear model $\hat y = -0.40024179x - 0.58611954$ over it.  
-#
-# A scatter plot of the residuals can also be plotted, where the focus should be around the line $y=0$, representing a residual of 0, or an error of 0 in the prediction.  The closer each residual is to that line, the less error in the prediction.
+# In addition to recreating the same graph from earlier showing the $(x, y)$ pairs of actual data values and the $(x, \hat y)$ pairs of predicted values, we can also create a scatter plot to visualize the residuals. The second graph shows the residuals and the focus should be around the line $y=0$, the line representing a residual of 0, or an error of 0 in the prediction.  The closer each residual is to that line, the less error in the prediction.
 
 # %%
-# Number of sample data points in training data
-train_sample_size = X_train.shape[0]
-
 # Create figure and axis for graphing
 fig, ax = plt.subplots(2, 1, sharex=True, figsize=(6,6))
 
@@ -248,7 +279,7 @@ test_results_df.head()
 # %% [markdown]
 # ### Evaluating performance metrics
 #
-# The most crucial step in evaluating a model is comparing the performance on "unseen" testing data.  Performance metrics always perform worse on testing data than on training data and it's normal to see more error on testing data.  Ideally, the testing metrics will be close to the training metrics because this indicates the model generalizes to the new data well enough to produce similar results.
+# Now comes time to compare the performance on "unseen" testing data against the metrics from the "seen" training data.  It should be noted that performance metrics always perform worse on testing data than they do on training data and it's extremely normal to see more error on testing data.  Ideally, the testing metrics will be close to the training metrics because this indicates the model generalizes to the new data well enough to produce similar results.
 
 # %%
 # The root mean squared error
@@ -265,10 +296,10 @@ print(f"Testing r2 score (coefficient of determination): {testing_r2_score*100:.
 # %% [markdown]
 # As expected, the model produces more error when evaluated on the testing data, which is why the RMSE for testing data is higher, albeit just slightly.  
 #
-# The r2 score has dropped significantly though and now x only explains about 8% of the change in y.  In general though, both indicate poor performance overall; x just isn't that great a predictor of y.
+# The r2 score has dropped significantly though and now x only explains about 8% of the change in y.  In general, both the RMSE and r2 score indicate poor performance overall; x just isn't that great a predictor of y.
 
 # %% [markdown]
-# ## Visualizing the Linear Model's fit
+# ## Visualizing the Training Model against the Testing Model
 
 # %%
 test_sample_size = X_test.shape[0]
