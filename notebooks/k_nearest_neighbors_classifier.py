@@ -20,6 +20,7 @@
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
@@ -49,18 +50,26 @@ X_train, X_test, y_train, y_test = train_test_split(df[feat_names],
                                                     random_state=42)
 
 # %% [markdown]
+# # Scaling the Training and Testing Data
+
+# %%
+scaler = StandardScaler().set_output(transform="pandas")
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.fit_transform(X_test)
+
+# %% [markdown]
 # # Training and Fitting the Model
 
 # %%
 k_neighbors_classifier = KNeighborsClassifier()
-k_neighbors_classifier = k_neighbors_classifier.fit(X_train, y_train)
+k_neighbors_classifier = k_neighbors_classifier.fit(X_train_scaled, y_train)
 
 # %% [markdown]
 # # Making Predictions
 
 # %%
-predictions = k_neighbors_classifier.predict(X_test)
-probabilities = k_neighbors_classifier.predict_proba(X_test)
+predictions = k_neighbors_classifier.predict(X_test_scaled)
+probabilities = k_neighbors_classifier.predict_proba(X_test_scaled)
 results_df = pd.DataFrame({'prob of no':probabilities[:,0],
                          'prob of yes':probabilities[:,1],
                          'predicted class':predictions,
@@ -71,8 +80,11 @@ results_df.head()
 # # Checking Accuracy
 
 # %%
-accuracy = k_neighbors_classifier.score(X_test, y_test)
+accuracy = k_neighbors_classifier.score(X_test_scaled, y_test)
 accuracy
+
+# %%
+type(X_test_scaled)
 
 # %% [markdown]
 # # Visualizing Decision Boundaries
@@ -84,7 +96,7 @@ for y in y_test:
         colors.append('green')
     else:
         colors.append('red')
-for_scatter = X_test.copy(deep=True)
+for_scatter = X_test_scaled.copy(deep=True)
         
 for_scatter['type'] = y_test
 for_scatter['color'] = colors
@@ -94,7 +106,7 @@ nos = for_scatter[for_scatter['type']=='no']
 
 # %%
 fig, ax = plt.subplots(1,1)
-DecisionBoundaryDisplay.from_estimator(k_neighbors_classifier, X_test, alpha=0.4, response_method="predict", ax=ax)
+DecisionBoundaryDisplay.from_estimator(k_neighbors_classifier, X_test_scaled, alpha=0.4, response_method="predict", ax=ax)
 ax.scatter(yesses['x'], yesses['y'], c=yesses['color'], s=20, edgecolor="k", label='yes')
 ax.scatter(nos['x'], nos['y'], c=nos['color'], s=20, edgecolor="k", label='no')
 ax.legend(title='binary variable')
@@ -111,5 +123,3 @@ cm = confusion_matrix(y_test, predictions,
 cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
 cm_display.plot(cmap='Greens')
 plt.show()
-
-# %%
