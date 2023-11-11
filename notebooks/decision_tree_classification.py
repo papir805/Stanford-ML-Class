@@ -62,7 +62,7 @@ decision_tree_classifier = decision_tree_classifier.fit(X_train, y_train)
 
 # %%
 fig, ax = plt.subplots(1,1)
-tree.plot_tree(decision_tree_classifier, ax=ax, impurity=False);
+tree.plot_tree(decision_tree_classifier, ax=ax, impurity=False, proportion=True);
 
 # %% [markdown]
 # # Visualizing Decision Tree using Graphviz
@@ -72,7 +72,7 @@ dot_data = tree.export_graphviz(decision_tree_classifier, out_file=None,
                                 feature_names=feat_names,
                                 class_names=class_names,
                                 filled=True, rounded=True,
-                                impurity=False)
+                                impurity=False, proportion=True)
 graph = graphviz.Source(dot_data)
 graph.render("../images/test")
 
