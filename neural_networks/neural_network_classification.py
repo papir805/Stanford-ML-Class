@@ -1,0 +1,57 @@
+# ---
+# jupyter:
+#   jupytext:
+#     formats: ipynb,py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.15.2
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
+
+# %%
+import mnist_loader
+import network
+import image_processing
+
+# %%
+training_data, validation_data, test_data = \
+mnist_loader.load_data_wrapper()
+
+# %%
+net = network.Network([784, 30, 10])
+
+# %%
+net.SGD(training_data, 30, 10, 3.0, test_data=test_data)
+
+# %%
+processed_image1 = \
+image_processing.process_image("../images/handwritten_2.png")
+
+# %%
+image_processing.print_image(processed_image1)
+
+# %%
+net.predict(processed_image1)
+
+# %%
+processed_image2 = \
+image_processing.process_image("../images/handwritten_8.jpg")
+image_processing.print_image(processed_image2)
+
+# %%
+net.predict(processed_image2)
+
+# %%
+processed_image3 = \
+image_processing.process_image("../images/handwritten_4.jpg")
+image_processing.print_image(processed_image3)
+
+# %%
+net.predict(processed_image3)
+
+# %%
