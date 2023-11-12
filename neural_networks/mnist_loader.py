@@ -15,7 +15,7 @@ import gzip
 # Third-party libraries
 import numpy as np
 
-def load_data():
+def load_data(file_path):
     """Return the MNIST data as a tuple containing the training data,
     the validation data, and the test data.
     
@@ -39,12 +39,12 @@ def load_data():
     below.
     """
     
-    f = gzip.open('../data/mnist.pkl.gz', 'rb')
+    f = gzip.open(file_path, 'rb')
     training_data, validation_data, test_data = pickle.load(f, encoding='latin1')
     f.close()
     return (training_data, validation_data, test_data)
 
-def load_data_wrapper():
+def load_data_wrapper(file_path):
     """Return a tuple containing ``(training_data, validation_data,
     test_data)``.  Based on ``load_data``, but the format is more
     convenient for use in our implementation of neural networks.
@@ -65,7 +65,7 @@ def load_data_wrapper():
     the training data and the validation / test data.  These formats
     turn out to be the most convenient for use in our neural network
     code."""
-    tr_d, va_d, te_d = load_data()
+    tr_d, va_d, te_d = load_data(file_path)
     training_inputs = [np.reshape(x, (784, 1)) for x in tr_d[0]]
     training_results = [vectorized_result(y) for y in tr_d[1]]
     training_data = list(zip(training_inputs, training_results))

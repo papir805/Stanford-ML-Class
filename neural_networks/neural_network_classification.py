@@ -19,8 +19,9 @@ import network
 import image_processing
 
 # %%
+file_path = "../data/mnist.pkl.gz"
 training_data, validation_data, test_data = \
-mnist_loader.load_data_wrapper()
+mnist_loader.load_data_wrapper(file_path)
 
 # %%
 net = network.Network([784, 30, 10])
