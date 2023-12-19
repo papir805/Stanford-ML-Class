@@ -100,6 +100,10 @@ def process_image(file_path):
     
     return gray
 
-def print_image(image):
+
+def print_image(image, ax=None):
     
-    plt.imshow(image, cmap='gray')
+    if image.shape == (784, 1):
+        image = image.reshape(28, 28)
+
+    plt.imshow(image, cmap='gray', ax=ax)

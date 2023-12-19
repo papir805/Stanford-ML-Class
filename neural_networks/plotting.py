@@ -53,7 +53,7 @@ def plot_heatmap(input_data, number_to_plot, plot_ten=False):
     num_images = images_array.shape[0]
     
     fig, ax = plt.subplots(1,1)
-    ax.imshow(images_array, cmap='hot', interpolation='nearest', aspect='auto')
+    ax.imshow(images_array, cmap='gray', interpolation='nearest', aspect='auto')
     ax.set_title(f'Pixel color values for {num_images} handwritten images of the digit {number_to_plot}')
     ax.set_xlabel('color_value')
     ax.set_xticks([])

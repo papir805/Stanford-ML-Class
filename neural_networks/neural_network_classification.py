@@ -13,6 +13,9 @@
 #     name: python3
 # ---
 
+# %% [markdown]
+# # Imports
+
 # %%
 import importlib
 
@@ -27,10 +30,44 @@ importlib.reload(network)
 importlib.reload(image_processing)
 importlib.reload(plotting)
 
+# %% [markdown]
+# # Loading Data
+
 # %%
 file_path = "../data/mnist.pkl.gz"
 training_data, validation_data, test_data = \
 mnist_loader.load_data_wrapper(file_path)
+
+# %% [markdown]
+# ## Visualizing the Dataset
+
+# %% [markdown]
+# ### The First Digit
+
+# %%
+first_digit = training_data[0][0]
+
+image_processing.print_image(first_digit)
+
+# %% [markdown]
+# ### The First Digit as a vector
+
+# %%
+plt.imshow(first_digit.T, cmap='gray', interpolation='nearest', aspect='auto')
+
+# %% [markdown]
+# ### Side by side comparison
+
+# %%
+ax[0]
+
+# %%
+fig, ax = plt.subplots(1,2)
+ax[0].imshow(first_digit.reshape(28,28), cmap='gray')
+ax[1].imshow(first_digit.T, cmap='gray', interpolation='nearest', aspect='auto');
+
+# %% [markdown]
+# # Training the Neural Network
 
 # %%
 net = network.Network([784, 30, 10])
@@ -83,5 +120,22 @@ plotting.plot_heatmap(images2, 7, plot_ten=True)
 
 # %%
 plotting.plot_heatmap(images2, 7)
+
+# %%
+image_processing.print_image(images2[0][0])
+
+# %%
+image_processing.print_image(images2[0][0].reshape(28, 28))
+
+# %%
+image_processing.print_image(training_data[0][0].reshape(28,28))
+
+# %%
+importlib.reload(network)
+importlib.reload(image_processing)
+importlib.reload(plotting)
+
+# %%
+image_processing.print_image(training_data[1][0])
 
 # %%
