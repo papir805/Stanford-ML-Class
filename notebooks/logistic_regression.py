@@ -14,6 +14,11 @@
 # ---
 
 # %% [markdown]
+# # Introduction
+
+# %%
+
+# %% [markdown]
 # # Imports 
 
 # %%
@@ -36,9 +41,15 @@ df = pd.read_csv("../data/toy_data.csv", index_col=0)
 df.head()
 
 # %% [markdown]
+# # Visualize The dataset
+
+# %%
+
+# %% [markdown]
 # # Generate Training and Testing Data
 
 # %%
+# Separate feature names from class names
 feat_names = df.columns[:-1]
 class_names = df['type'].unique()
 
