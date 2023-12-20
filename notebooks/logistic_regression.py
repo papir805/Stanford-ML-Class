@@ -49,7 +49,7 @@ target_label = 'failure'
 # # Visualize The dataset
 
 # %%
-df['color'] = df['failure'].map({'no':'green', 'yes':'red'})
+df['color'] = df[target_label].map({'no':'green', 'yes':'red'})
 
 # %%
 # colors = []
@@ -60,18 +60,18 @@ df['color'] = df['failure'].map({'no':'green', 'yes':'red'})
 #         colors.append('red')
 # for_scatter = X_test.copy(deep=True)
         
-# for_scatter['failure'] = y_test
+# for_scatter[target_label] = y_test
 # for_scatter['color'] = colors
 
-yesses = df[df['failure']=='yes']
-nos = df[df['failure']=='no']
+yesses = df[df[target_label]=='yes']
+nos = df[df[target_label]=='no']
 
 fig, ax = plt.subplots(1,1)
 
-ax.scatter(yesses['pressure (psi)'], yesses['temperature (deg F)'], c=yesses['color'], s=20, edgecolor="k", label='yes', alpha=0.3)
-ax.set_xlabel('pressure (psi)')
+ax.scatter(yesses[x_label], yesses[y_label], c=yesses['color'], s=20, edgecolor="k", label='yes', alpha=0.3)
+ax.set_xlabel(x_label)
 
-ax.scatter(nos['pressure (psi)'], nos['temperature (deg F)'], c=nos['color'], s=20, edgecolor="k", label='no', alpha=0.6)
+ax.scatter(nos[x_label], nos[y_label], c=nos['color'], s=20, edgecolor="k", label='no', alpha=0.6)
 
 ax.legend(title='Engine Failure ')
 
@@ -83,10 +83,10 @@ plt.show()
 fig, ax = plt.subplots(1,1)
 
 
-df.plot.scatter(x='pressure (psi)', 
-                y='temperature (deg F)', 
+df.plot.scatter(x=x_label, 
+                y=y_label, 
                 ax=ax, 
-                c=df['failure'].map({'no':'green', 'yes':'red'}),
+                c=df[target_label].map({'no':'green', 'yes':'red'}),
                 label=['no', 'yes'])
 ax.legend();
 
@@ -95,12 +95,12 @@ ax.legend();
 
 # %%
 # Separate feature names from class names
-feat_names = df.columns[:-1]
-class_names = df['failure'].unique()
+feat_names = [x_label, y_label]
+unique_labels = df[target_label].unique()
 
 # %%
 X_train, X_test, y_train, y_test = train_test_split(df[feat_names],
-                                                    df['failure'],
+                                                    df[target_label],
                                                     test_size=0.25,
                                                     random_state=42)
 
@@ -136,10 +136,11 @@ accuracy
 # %%
 fig, ax = plt.subplots(1,1)
 DecisionBoundaryDisplay.from_estimator(log_reg_classifier, X_test, alpha=0.4, response_method="predict", ax=ax)
-ax.scatter(yesses['pressure (psi)'], yesses['temperature (deg F)'], c=yesses['color'], s=20, edgecolor="k", label='yes')
-ax.scatter(nos['pressure (psi)'], nos['temperature (deg F)'], c=nos['color'], s=20, edgecolor="k", label='no')
+ax.scatter(yesses[x_label], yesses[y_label], c=yesses['color'], s=20, edgecolor="k", label='yes')
+ax.scatter(nos[x_label], nos[y_label], c=nos['color'], s=20, edgecolor="k", label='no')
 ax.legend(title='Failure?')
 ax.set_title(f'Logistic Regression Classifier $(Accuracy = {accuracy:.2f})$')
+plt.tight_layout()
 plt.show()
 
 # %% [markdown]
@@ -147,9 +148,9 @@ plt.show()
 
 # %%
 cm = confusion_matrix(y_test, predictions,
-                      labels=class_names,
+                      labels=unique_labels,
                       normalize='all')
-cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
+cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=unique_labels)
 cm_display.plot(cmap='Greens')
 plt.show()
 
