@@ -44,30 +44,22 @@ df.head()
 # # Visualize The dataset
 
 # %%
-<<<<<<< HEAD
-df['color'] = df[target_label].map({'no':'green', 'yes':'red'})
+x_label = 'pressure (psi)'
+y_label = 'temperature (deg F)'
+target_label = 'failure'
 
 # %%
-# colors = []
-# for y in y_test:
-#     if y == 'yes':
-#         colors.append('green')
-#     else:
-#         colors.append('red')
-# for_scatter = X_test.copy(deep=True)
-        
-# for_scatter[target_label] = y_test
-# for_scatter['color'] = colors
+df['color'] = df[target_label].map({'no':'green', 'yes':'red'})
+df_yesses = df[df[target_label]=='yes']
+df_nos = df[df[target_label]=='no']
 
-yesses = df[df[target_label]=='yes']
-nos = df[df[target_label]=='no']
-
+# %%
 fig, ax = plt.subplots(1,1)
 
-ax.scatter(yesses[x_label], yesses[y_label], c=yesses['color'], s=20, edgecolor="k", label='yes', alpha=0.3)
+ax.scatter(df_yesses[x_label], df_yesses[y_label], c=df_yesses['color'], s=20, edgecolor="k", label='yes', alpha=0.3)
 ax.set_xlabel(x_label)
 
-ax.scatter(nos[x_label], nos[y_label], c=nos['color'], s=20, edgecolor="k", label='no', alpha=0.6)
+ax.scatter(df_nos[x_label], df_nos[y_label], c=df_nos['color'], s=20, edgecolor="k", label='no', alpha=0.6)
 
 ax.legend(title='Engine Failure ')
 
@@ -75,39 +67,17 @@ ax.set_title('Failure $')
 
 plt.show()
 
-# %%
-fig, ax = plt.subplots(1,1)
-
-
-df.plot.scatter(x=x_label, 
-                y=y_label, 
-                ax=ax, 
-                c=df[target_label].map({'no':'green', 'yes':'red'}),
-                label=['no', 'yes'])
-ax.legend();
-=======
->>>>>>> parent of 8d10c0a... Changed to pressure vs temp
-
 # %% [markdown]
 # # Generate Training and Testing Data
 
 # %%
 # Separate feature names from class names
-<<<<<<< HEAD
 feat_names = [x_label, y_label]
 unique_labels = df[target_label].unique()
 
 # %%
 X_train, X_test, y_train, y_test = train_test_split(df[feat_names],
                                                     df[target_label],
-=======
-feat_names = df.columns[:-1]
-class_names = df['type'].unique()
-
-# %%
-X_train, X_test, y_train, y_test = train_test_split(df[feat_names],
-                                                    df['type'],
->>>>>>> parent of 8d10c0a... Changed to pressure vs temp
                                                     test_size=0.25,
                                                     random_state=42)
 
@@ -144,31 +114,29 @@ accuracy
 colors = []
 for y in y_test:
     if y == 'yes':
-        colors.append('green')
-    else:
         colors.append('red')
-for_scatter = X_test.copy(deep=True)
+    else:
+        colors.append('green')
+X_test_copy = X_test.copy(deep=True)
         
-for_scatter['type'] = y_test
-for_scatter['color'] = colors
+X_test_copy['type'] = y_test
+X_test_copy['color'] = colors
 
-yesses = for_scatter[for_scatter['type']=='yes']
-nos = for_scatter[for_scatter['type']=='no']
+test_yesses = X_test_copy[X_test_copy['type']=='yes']
+test_nos = X_test_copy[X_test_copy['type']=='no']
 
 # %%
 fig, ax = plt.subplots(1,1)
 DecisionBoundaryDisplay.from_estimator(log_reg_classifier, X_test, alpha=0.4, response_method="predict", ax=ax)
-<<<<<<< HEAD
-ax.scatter(yesses[x_label], yesses[y_label], c=yesses['color'], s=20, edgecolor="k", label='yes')
-ax.scatter(nos[x_label], nos[y_label], c=nos['color'], s=20, edgecolor="k", label='no')
-ax.legend(title='Failure?')
-=======
-ax.scatter(yesses['x'], yesses['y'], c=yesses['color'], s=20, edgecolor="k", label='yes')
-ax.scatter(nos['x'], nos['y'], c=nos['color'], s=20, edgecolor="k", label='no')
-ax.legend(title='binary variable')
->>>>>>> parent of 8d10c0a... Changed to pressure vs temp
+
+ax.scatter(test_nos[x_label], test_nos[y_label], c=test_nos['color'], s=20, edgecolor="k", label='yes')
+
+ax.scatter(test_yesses[x_label], test_yesses[y_label], c=test_yesses['color'], s=20, edgecolor="k", label='no')
+
+ax.legend(title='Engine failure?')
 ax.set_title(f'Logistic Regression Classifier $(Accuracy = {accuracy:.2f})$')
-plt.tight_layout()
+
+#plt.tight_layout()
 plt.show()
 
 # %% [markdown]
