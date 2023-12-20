@@ -68,7 +68,7 @@ plt.savefig('../images/scatter_with_colors.png', bbox_inches='tight');
 # %%
 joined_x = np.append(data1[:,0], data2[:,0])
 joined_y = np.append(data1[:,1], data2[:,1])
-types = np.array(['yes'] * sample_size + ['no'] * sample_size)
+types = np.array(['no'] * sample_size + ['yes'] * sample_size)
 
 # %%
 plt.plot(joined_x, joined_y, 'o', markeredgewidth=0.5, markeredgecolor='black', alpha=0.5)

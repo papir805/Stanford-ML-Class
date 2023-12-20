@@ -54,16 +54,19 @@ df_yesses = df[df[target_label]=='yes']
 df_nos = df[df[target_label]=='no']
 
 # %%
+df.head()
+
+# %%
 fig, ax = plt.subplots(1,1)
 
 ax.scatter(df_yesses[x_label], df_yesses[y_label], c=df_yesses['color'], s=20, edgecolor="k", label='yes', alpha=0.3)
 
 
-ax.scatter(df_nos[x_label], df_nos[y_label], c=df_nos['color'], s=20, edgecolor="k", label='no', alpha=0.6)
+ax.scatter(df_nos[x_label], df_nos[y_label], c=df_nos['color'], s=20, edgecolor="k", label='no', alpha=0.3)
 
 ax.set_title('Engine Failure: Pressure vs. Temperature')
 ax.set_xlabel(x_label)
-ax.set_ylabel(y_label)
+ax.set_ylabel(r'Temperature ($F^{\circ}$)')
 ax.legend(title='Failure?')
 
 plt.show()
@@ -130,12 +133,13 @@ test_nos = X_test_copy[X_test_copy['type']=='no']
 fig, ax = plt.subplots(1,1)
 DecisionBoundaryDisplay.from_estimator(log_reg_classifier, X_test, alpha=0.4, response_method="predict", ax=ax)
 
-ax.scatter(test_nos[x_label], test_nos[y_label], c=test_nos['color'], s=20, edgecolor="k", label='yes')
+ax.scatter(test_yesses[x_label], test_yesses[y_label], c=test_yesses['color'], s=20, edgecolor="k", label='yes')
 
-ax.scatter(test_yesses[x_label], test_yesses[y_label], c=test_yesses['color'], s=20, edgecolor="k", label='no')
+ax.scatter(test_nos[x_label], test_nos[y_label], c=test_nos['color'], s=20, edgecolor="k", label='no')
 
+ax.set_title(f'Testing Data: Log Reg Classifier $(Accuracy = {accuracy:.2f})$')
+ax.set_ylabel(r'Temperature ($F^{\circ}$)')
 ax.legend(title='Failure?')
-ax.set_title(f'Logistic Regression Classifier $(Accuracy = {accuracy:.2f})$')
 
 #plt.tight_layout()
 plt.show()
