@@ -133,9 +133,9 @@ test_nos = X_test_copy[X_test_copy['type']=='no']
 fig, ax = plt.subplots(1,1)
 DecisionBoundaryDisplay.from_estimator(log_reg_classifier, X_test, alpha=0.4, response_method="predict", ax=ax)
 
-ax.scatter(test_yesses[x_label], test_yesses[y_label], c=test_yesses['color'], s=20, edgecolor="k", label='yes')
+ax.scatter(test_yesses[x_label], test_yesses[y_label], c=test_yesses['color'], s=20, edgecolor="k", label='yes', alpha=0.6)
 
-ax.scatter(test_nos[x_label], test_nos[y_label], c=test_nos['color'], s=20, edgecolor="k", label='no')
+ax.scatter(test_nos[x_label], test_nos[y_label], c=test_nos['color'], s=20, edgecolor="k", label='no', alpha=0.6)
 
 ax.set_title(f'Testing Data: Log Reg Classifier $(Accuracy = {accuracy:.2f})$')
 ax.set_ylabel(r'Temperature ($F^{\circ}$)')
