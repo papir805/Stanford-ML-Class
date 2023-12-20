@@ -57,13 +57,14 @@ df_nos = df[df[target_label]=='no']
 fig, ax = plt.subplots(1,1)
 
 ax.scatter(df_yesses[x_label], df_yesses[y_label], c=df_yesses['color'], s=20, edgecolor="k", label='yes', alpha=0.3)
-ax.set_xlabel(x_label)
+
 
 ax.scatter(df_nos[x_label], df_nos[y_label], c=df_nos['color'], s=20, edgecolor="k", label='no', alpha=0.6)
 
-ax.legend(title='Engine Failure ')
-
-ax.set_title('Failure $')
+ax.set_title('Engine Failure: Pressure vs. Temperature')
+ax.set_xlabel(x_label)
+ax.set_ylabel(y_label)
+ax.legend(title='Failure?')
 
 plt.show()
 
@@ -133,7 +134,7 @@ ax.scatter(test_nos[x_label], test_nos[y_label], c=test_nos['color'], s=20, edge
 
 ax.scatter(test_yesses[x_label], test_yesses[y_label], c=test_yesses['color'], s=20, edgecolor="k", label='no')
 
-ax.legend(title='Engine failure?')
+ax.legend(title='Failure?')
 ax.set_title(f'Logistic Regression Classifier $(Accuracy = {accuracy:.2f})$')
 
 #plt.tight_layout()
