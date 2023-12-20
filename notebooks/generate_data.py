@@ -18,15 +18,19 @@ import numpy as np
 import pandas as pd
 
 from scipy.stats import multivariate_normal
+from sklearn.datasets import make_regression
 
 import matplotlib.pyplot as plt
+
+# %% [markdown]
+# # Generic Dataset
+
+# %% [markdown]
+# ## data1
 
 # %%
 random_seed=1000
 sample_size=250
-
-# %% [markdown]
-# # data1
 
 # %%
 mean = np.array([0,0])
@@ -38,7 +42,7 @@ data1 = distr.rvs(size=sample_size)
 plt.plot(data1[:,0], data1[:,1], 'o', markeredgewidth=0.5, markeredgecolor='black');
 
 # %% [markdown]
-# # data2
+# ## data2
 
 # %%
 mean = np.array([2,-2])
@@ -50,7 +54,7 @@ data2 = distr.rvs(size=sample_size)
 plt.plot(data2[:,0], data2[:,1], 'o', markeredgewidth=0.5, markeredgecolor='black');
 
 # %% [markdown]
-# # Both datasets
+# ## Both datasets
 
 # %%
 fig, ax = plt.subplots(1,1)
@@ -59,7 +63,7 @@ ax.plot(data2[:,0], data2[:,1], 'o', markeredgewidth=0.5, markeredgecolor='black
 plt.savefig('../images/scatter_with_colors.png', bbox_inches='tight');
 
 # %% [markdown]
-# # joining data
+# ## Joining data
 
 # %%
 joined_x = np.append(data1[:,0], data2[:,0])
@@ -71,10 +75,35 @@ plt.plot(joined_x, joined_y, 'o', markeredgewidth=0.5, markeredgecolor='black', 
 plt.savefig("../images/scatter.png", bbox_inches='tight');
 
 # %% [markdown]
-# # exporting to csv
+# ## exporting to csv
 
 # %%
 df = pd.DataFrame({'x':joined_x, 'y':joined_y, 'type':types})
 df.to_csv("../data/toy_data.csv")
 
+# %% [markdown]
+# # Linear Regression Dataset (Housing Data)
+
 # %%
+sample_size=500
+n_features=1
+noise=30
+random_state=42
+
+# %%
+regression_data = make_regression(n_samples=sample_size, 
+                                  n_features=n_features, 
+                                  noise=noise, 
+                                  random_state=random_state)
+
+# %%
+x = 4*(regression_data[0].reshape(500))+15
+y = regression_data[1]+255
+
+# %% [markdown]
+# ## Exporting to CSV
+
+# %%
+df = pd.DataFrame({'sq_ft':x,
+                    'price':y})
+df.to_csv("../data/housing_data.csv")
