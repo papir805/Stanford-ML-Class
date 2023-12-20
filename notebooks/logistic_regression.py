@@ -40,15 +40,11 @@ df = pd.read_csv("../data/toy_data.csv", index_col=0)
 # %%
 df.head()
 
-# %%
-x_label = 'pressure (psi)'
-y_label = 'temperature (deg F)'
-target_label = 'failure'
-
 # %% [markdown]
 # # Visualize The dataset
 
 # %%
+<<<<<<< HEAD
 df['color'] = df[target_label].map({'no':'green', 'yes':'red'})
 
 # %%
@@ -89,18 +85,29 @@ df.plot.scatter(x=x_label,
                 c=df[target_label].map({'no':'green', 'yes':'red'}),
                 label=['no', 'yes'])
 ax.legend();
+=======
+>>>>>>> parent of 8d10c0a... Changed to pressure vs temp
 
 # %% [markdown]
 # # Generate Training and Testing Data
 
 # %%
 # Separate feature names from class names
+<<<<<<< HEAD
 feat_names = [x_label, y_label]
 unique_labels = df[target_label].unique()
 
 # %%
 X_train, X_test, y_train, y_test = train_test_split(df[feat_names],
                                                     df[target_label],
+=======
+feat_names = df.columns[:-1]
+class_names = df['type'].unique()
+
+# %%
+X_train, X_test, y_train, y_test = train_test_split(df[feat_names],
+                                                    df['type'],
+>>>>>>> parent of 8d10c0a... Changed to pressure vs temp
                                                     test_size=0.25,
                                                     random_state=42)
 
@@ -134,11 +141,32 @@ accuracy
 # # Visualizing Decision Boundaries
 
 # %%
+colors = []
+for y in y_test:
+    if y == 'yes':
+        colors.append('green')
+    else:
+        colors.append('red')
+for_scatter = X_test.copy(deep=True)
+        
+for_scatter['type'] = y_test
+for_scatter['color'] = colors
+
+yesses = for_scatter[for_scatter['type']=='yes']
+nos = for_scatter[for_scatter['type']=='no']
+
+# %%
 fig, ax = plt.subplots(1,1)
 DecisionBoundaryDisplay.from_estimator(log_reg_classifier, X_test, alpha=0.4, response_method="predict", ax=ax)
+<<<<<<< HEAD
 ax.scatter(yesses[x_label], yesses[y_label], c=yesses['color'], s=20, edgecolor="k", label='yes')
 ax.scatter(nos[x_label], nos[y_label], c=nos['color'], s=20, edgecolor="k", label='no')
 ax.legend(title='Failure?')
+=======
+ax.scatter(yesses['x'], yesses['y'], c=yesses['color'], s=20, edgecolor="k", label='yes')
+ax.scatter(nos['x'], nos['y'], c=nos['color'], s=20, edgecolor="k", label='no')
+ax.legend(title='binary variable')
+>>>>>>> parent of 8d10c0a... Changed to pressure vs temp
 ax.set_title(f'Logistic Regression Classifier $(Accuracy = {accuracy:.2f})$')
 plt.tight_layout()
 plt.show()
