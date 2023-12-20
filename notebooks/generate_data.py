@@ -29,12 +29,15 @@ import matplotlib.pyplot as plt
 # ## data1
 
 # %%
+1.45 - 15.23
+
+# %%
 random_seed=1000
 sample_size=250
 
 # %%
-mean = np.array([0,0])
-cov = np.array([[1, 0], [0, 1]])
+mean = np.array([14.7,200])
+cov = np.array([[1, 0], [0, 80]])
 distr = multivariate_normal(cov=cov, mean=mean, seed=random_seed)
 data1 = distr.rvs(size=sample_size)
 
@@ -45,8 +48,8 @@ plt.plot(data1[:,0], data1[:,1], 'o', markeredgewidth=0.5, markeredgecolor='blac
 # ## data2
 
 # %%
-mean = np.array([2,-2])
-cov = np.array([[2, 0], [0, 2]])
+mean = np.array([17,220])
+cov = np.array([[2, 0], [0, 60]])
 distr = multivariate_normal(cov=cov, mean=mean, seed=random_seed)
 data2 = distr.rvs(size=sample_size)
 
@@ -78,7 +81,7 @@ plt.savefig("../images/scatter.png", bbox_inches='tight');
 # ## exporting to csv
 
 # %%
-df = pd.DataFrame({'x':joined_x, 'y':joined_y, 'type':types})
+df = pd.DataFrame({'pressure (psi)':joined_x, 'temperature (deg F)':joined_y, 'failure':types})
 df.to_csv("../data/toy_data.csv")
 
 # %% [markdown]

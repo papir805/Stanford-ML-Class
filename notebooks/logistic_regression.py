@@ -40,10 +40,55 @@ df = pd.read_csv("../data/toy_data.csv", index_col=0)
 # %%
 df.head()
 
+# %%
+x_label = 'pressure (psi)'
+y_label = 'temperature (deg F)'
+target_label = 'failure'
+
 # %% [markdown]
 # # Visualize The dataset
 
 # %%
+df['color'] = df['failure'].map({'no':'green', 'yes':'red'})
+
+# %%
+# colors = []
+# for y in y_test:
+#     if y == 'yes':
+#         colors.append('green')
+#     else:
+#         colors.append('red')
+# for_scatter = X_test.copy(deep=True)
+        
+# for_scatter['failure'] = y_test
+# for_scatter['color'] = colors
+
+yesses = df[df['failure']=='yes']
+nos = df[df['failure']=='no']
+
+fig, ax = plt.subplots(1,1)
+
+ax.scatter(yesses['pressure (psi)'], yesses['temperature (deg F)'], c=yesses['color'], s=20, edgecolor="k", label='yes', alpha=0.3)
+ax.set_xlabel('pressure (psi)')
+
+ax.scatter(nos['pressure (psi)'], nos['temperature (deg F)'], c=nos['color'], s=20, edgecolor="k", label='no', alpha=0.6)
+
+ax.legend(title='Engine Failure ')
+
+ax.set_title('Failure $')
+
+plt.show()
+
+# %%
+fig, ax = plt.subplots(1,1)
+
+
+df.plot.scatter(x='pressure (psi)', 
+                y='temperature (deg F)', 
+                ax=ax, 
+                c=df['failure'].map({'no':'green', 'yes':'red'}),
+                label=['no', 'yes'])
+ax.legend();
 
 # %% [markdown]
 # # Generate Training and Testing Data
@@ -51,11 +96,11 @@ df.head()
 # %%
 # Separate feature names from class names
 feat_names = df.columns[:-1]
-class_names = df['type'].unique()
+class_names = df['failure'].unique()
 
 # %%
 X_train, X_test, y_train, y_test = train_test_split(df[feat_names],
-                                                    df['type'],
+                                                    df['failure'],
                                                     test_size=0.25,
                                                     random_state=42)
 
@@ -89,26 +134,11 @@ accuracy
 # # Visualizing Decision Boundaries
 
 # %%
-colors = []
-for y in y_test:
-    if y == 'yes':
-        colors.append('green')
-    else:
-        colors.append('red')
-for_scatter = X_test.copy(deep=True)
-        
-for_scatter['type'] = y_test
-for_scatter['color'] = colors
-
-yesses = for_scatter[for_scatter['type']=='yes']
-nos = for_scatter[for_scatter['type']=='no']
-
-# %%
 fig, ax = plt.subplots(1,1)
 DecisionBoundaryDisplay.from_estimator(log_reg_classifier, X_test, alpha=0.4, response_method="predict", ax=ax)
-ax.scatter(yesses['x'], yesses['y'], c=yesses['color'], s=20, edgecolor="k", label='yes')
-ax.scatter(nos['x'], nos['y'], c=nos['color'], s=20, edgecolor="k", label='no')
-ax.legend(title='binary variable')
+ax.scatter(yesses['pressure (psi)'], yesses['temperature (deg F)'], c=yesses['color'], s=20, edgecolor="k", label='yes')
+ax.scatter(nos['pressure (psi)'], nos['temperature (deg F)'], c=nos['color'], s=20, edgecolor="k", label='no')
+ax.legend(title='Failure?')
 ax.set_title(f'Logistic Regression Classifier $(Accuracy = {accuracy:.2f})$')
 plt.show()
 
