@@ -78,7 +78,9 @@ plt.savefig("../images/scatter.png", bbox_inches='tight');
 # ## exporting to csv
 
 # %%
-df = pd.DataFrame({'pressure (psi)':joined_x, 'temperature (deg F)':joined_y, 'failure':types})
+df = pd.DataFrame({'pressure (psi)':np.round(joined_x, 2), 
+                   'temperature (deg F)':np.round(joined_y, 2), 
+                   'failure':types})
 df.to_csv("../data/toy_data.csv")
 
 # %% [markdown]
@@ -97,8 +99,8 @@ regression_data = make_regression(n_samples=sample_size,
                                   random_state=random_state)
 
 # %%
-x = 4*(regression_data[0].reshape(500))+15
-y = regression_data[1]+255
+x = np.round(4*(regression_data[0].reshape(500))+15, 2)
+y = np.round(regression_data[1]+255, 2)
 
 # %% [markdown]
 # ## Exporting to CSV
@@ -107,3 +109,5 @@ y = regression_data[1]+255
 df = pd.DataFrame({'sq_ft':x,
                     'price':y})
 df.to_csv("../data/housing_data.csv")
+
+# %%
