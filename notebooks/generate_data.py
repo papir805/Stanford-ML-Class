@@ -19,6 +19,7 @@ import pandas as pd
 
 from scipy.stats import multivariate_normal
 from sklearn.datasets import make_regression
+from sklearn.datasets import make_classification
 
 import matplotlib.pyplot as plt
 
@@ -106,8 +107,56 @@ y = np.round(regression_data[1]+255, 2)
 # ## Exporting to CSV
 
 # %%
-df = pd.DataFrame({'sq_ft':x,
-                    'price':y})
+df = pd.DataFrame({'sq_ft (in hundreds)':x,
+                    'price (in thousands)':y})
 df.to_csv("../data/housing_data.csv")
+
+# %% [markdown]
+# # make_classification
+
+# %%
+sample_size=500
+n_features=2
+random_state=40
+
+# %%
+classification_data = make_classification(n_samples=sample_size, 
+                                          n_features=n_features,
+                                          n_redundant=0,
+                                          random_state=random_state,
+                                          shift=1,
+                                          scale=18)
+
+# %%
+classification_data[0][:,0].shape
+
+# %%
+x = classification_data[0][:,0]
+y = classification_data[0][:,1]
+labels = classification_data[1]
+
+df = pd.DataFrame({'age (yrs)':x+40,
+                   'weight (lbs)':y+180,
+                   'label':labels})
+
+df['hypertension'] = df['label'].map({1:'yes', 0:'no'})
+
+# %%
+df.head()
+
+# %%
+df.loc[df['age (yrs)']==df['age (yrs)'].max(),'age (yrs)'] = 96.393905
+
+# %%
+fig, ax = plt.subplots(1,1)
+yesses = df[df['hypertension']=='yes']
+nos = df[df['hypertension']=='no']
+
+ax.scatter(x=yesses['age (yrs)'], y=yesses['weight (lbs)'], color='red', label='yes')
+ax.scatter(x=nos['age (yrs)'], y=nos['weight (lbs)'], color='blue', label='no')
+ax.legend();
+
+# %%
+df[['age (yrs)','weight (lbs)','hypertension']].to_csv("../data/blood_pressure_data.csv")
 
 # %%

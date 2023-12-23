@@ -1,4 +1,4 @@
-,sq_ft,price
+,sq_ft (in hundreds),price (in thousands)
 0,11.77,217.21
 1,15.39,256.29
 2,16.89,275.05
