@@ -16,9 +16,7 @@
 # %% [markdown]
 # # Introduction
 #
-# The goal of this notebook is to use data to understand the relationship between square footage of a dwelling and the dwelling's price.  Whenever a relationship exists, regression is one of the statistical tools that's available to help understand the relationship.  Using this relationship, regression can also be used to make predictions about unseen data, for instance predicting the price of a new dwelling based on it's square footage.  
-#
-# Since it stands to reason that there's a relationship between the square footage of a property and its value, regression is probably a good choice.  However, the type of regression one choses to use depends on several factors.  For reasons that will be made clear shortly, this notebook will focus specifically on linear regression.  Most of the time, one needs to visualize the data before one can identify what kind of regression is most appropriate.  
+# The goal of this notebook is to use data to understand the relationship between square footage of a dwelling and the dwelling's price.  The type of data you plan on using heavily influences the type of algorithm that's available to use. Additionally, it's usually a good idea to visualize the data before making any decision about what kind of algorithm to use.
 #
 # First, let's import the necessary modules and then read in the data.
 
@@ -53,13 +51,13 @@ df.head()
 
 # %%
 # Store label names for x and y
-x_label = 'sq_ft'
-y_label = 'price'
+x_label = 'sq_ft (in hundreds)'
+y_label = 'price (in thousands)'
 
 # Store other names for later to evaluate
 # the accuracy of the model
-y_true = 'true_price'
-y_predicted = 'predicted_price'
+y_true = 'true_price (in thousands)'
+y_predicted = 'predicted_price (in thousands)'
 
 # %% [markdown]
 # ## Visualizing the Data
@@ -70,8 +68,8 @@ fig, ax = plt.subplots(1, 1)
 
 # Scatter plot of housing data 
 ax.scatter(x=df[x_label], y=df[y_label])
-ax.set_xlabel(x_label + ' (in hundreds)')
-ax.set_ylabel(y_label + ' (in thousands)')
+ax.set_xlabel(x_label)
+ax.set_ylabel(y_label)
 ax.set_title('Square Footage vs. Housing Price');
 
 # %% [markdown]
@@ -81,7 +79,11 @@ ax.set_title('Square Footage vs. Housing Price');
 # # Why Linear Regression?
 
 # %% [markdown]
-# Linear regression is able to use any number of qualitative or quantitative inputs to predict a quantitative output.  **It can only predict a single quantitative output**.  Because our goal is to predict the price of a dwelling, which is quantitative, linear regression can be used.  
+# Whenever a relationship in the data exists, regression is one common statistical tools that's available to help understand it.  Furthermore, regression can also be used to make predictions about unseen data, for instance predicting the price of a new dwelling based on it's square footage.  
+#
+# Since it stands to reason that there's a relationship between the square footage of a property and its value, regression is probably a good choice.  However, the type of regression one choses to use depends on several factors.  
+#
+# Linear regression is able to use any number of qualitative or quantitative inputs to predict a quantitative output.  **It can only predict a quantitative output**.  Because our goal is to predict the price of a dwelling, which is quantitative, linear regression can be used.  
 #
 # **Note**: Using qualitative inputs involves a little more effort than quantitative inputs.  Also, using more than one input, whether qualitative or quantitative, adds complexity.  This notebook will first consider the simplest case of linear regression, when there's a single quantitative input, which in this case will be the square footage of a dwelling.  However, sections will be added to the notebook later to discuss how to deal with these situations. 
 #
@@ -98,7 +100,7 @@ ax.set_title('Square Footage vs. Housing Price');
 # * Option 1: Build the model now and wait for a sufficient amount of new data to come in, which can be used to verify the model's accuracy.
 # * Option 2: Parition the dataset into a training set and a testing set.  The training set can be used to build the model and the testing set will only be used to verify the accuracy.
 #
-# Some may be concerned that by partioning your dataset and then only using part of it to build the model might negatively affect its performance.  After all, it's reasonable to think that the more data points you have the better off it will be, yet there tend to be diminishing returns.  As it turns out, as long as your dataset is sufficiently large, performing a train/test split will still yield quite good results.  Given the alternative is waiting, a train/test split approach is preferred because it will allow you to determine performance immmediately and tweaks to the model can be implemented quickly, if need be.
+# Some may be concerned that by partioning your dataset and then only using part of it to build the model might negatively affect its performance.  After all, it's reasonable to think that the more data points you have the better off it will be, yet in truth there tend to be diminishing returns.  As it turns out, as long as your dataset is sufficiently large, performing a train/test split will still yield quite good results.  Given the alternative is waiting, a train/test split approach is preferred because it will allow you to determine performance immmediately and tweaks to the model can be implemented quickly, if need be.
 
 # %%
 # Split dataset into training and testing dataset
@@ -124,12 +126,12 @@ lin_reg_model = linear_model.LinearRegression()
 lin_reg_model = lin_reg_model.fit(X_train, y_train)
 
 # The slope
-slope = lin_reg_model.coef_
-print(f"Slope: {slope[0][0]:.2f}")
+beta_1 = lin_reg_model.coef_[0][0]
+print(f"Estimated Slope: {beta_1:.2f}")
 
 # The y-intercept
-intercept = lin_reg_model.intercept_
-print(f"y-intercept: {intercept[0]:.2f}")
+beta_0 = lin_reg_model.intercept_[0]
+print(f"Estimated y-intercept: {beta_0:.2f}")
 
 # %% [markdown]
 # Based on the training data, the model has estimated the slope and y-intercept.  Using the values from above, the model will look like: $$\hat y = 15.51x + 21.21$$
@@ -163,7 +165,7 @@ train_results_df = pd.DataFrame({x_label:X_train.flatten(),
 train_results_df.head()
 
 # %% [markdown]
-# Remembering the linear model from earlier, the train_results_df from above can be explained.  For the first entry, $\text{sq_ft}=14.56$.  Plugging this value into the model would look as follows: 
+# Remembering the linear model from earlier, the train_results_df from above can be explained.  For the first entry, $\text{sq_ft}=14.56$ hundred.  Plugging this value into the model would look as follows: 
 #
 # $$\hat y = 15.51x + 21.21$$
 #
@@ -171,7 +173,7 @@ train_results_df.head()
 #
 # $$\hat y = 246.99$$
 #
-# The result is the predicted price of 246.99 (thousand), however the true price was $y=284.14$ (thousand).  Doing this for every sq_ft value in the dataset leads to many $(x, \hat y)$ pairs, the sq_ft and a *predicted* price, which can then be graphed and compared to the $(x, y)$ pairs from the dataset itself, representing the sq_ft and the *true* price.
+# The result is the predicted price of 246.99 thousand, however the true price was $y=284.14$ thousand.  Doing this for every sq_ft value in the dataset leads to many $(x, \hat y)$ pairs, the sq_ft and a *predicted* price, which can then be graphed and compared to the $(x, y)$ pairs from the dataset itself, representing the sq_ft in hundreds and the *true* price in thousands.
 
 # %% [markdown]
 # ### Visualizing the Linear Model's Fit
@@ -192,8 +194,8 @@ ax.scatter(x=X_train, y=y_train, label='Actual')
 ax.plot(X_train, training_predictions, color='r', label='predicted', alpha=0.6)
 
 ax.set_title(f'Training Data: Actual vs. Predicted Values ($n={train_sample_size})$')
-ax.set_xlabel(x_label + ' (in hundreds)')
-ax.set_ylabel(y_label + ' (in thousands)')
+ax.set_xlabel(x_label)
+ax.set_ylabel(y_label)
 ax.legend();
 
 # %% [markdown]
@@ -234,7 +236,7 @@ train_results_df = pd.DataFrame({x_label:X_train.flatten(),
 train_results_df.head()
 
 # %% [markdown]
-# Earlier, we plugged in $\text{sq_ft}=14.56$ to the model and it returned $\hat y = 246.99$, the predicted price, however the true price was 284.14.  To determine the error in the prediction, calculate the residual as follows:
+# Earlier, we plugged in $\text{sq_ft}=14.56$ hundred to the model and it returned $\hat y = 246.99$ thousand, the predicted price, however the true price was 284.14 thousand.  To determine the error in the prediction, calculate the residual as follows:
 #
 # $$\text{residual} = y - \hat y$$
 #
@@ -242,7 +244,7 @@ train_results_df.head()
 #
 # $$\text{residual} = 37.15$$
 #
-# When $\text{sq_ft}=14.56$, the residual indicates the error in the prediction was 37.15.  Essentially, the true price was 37.15 (thousand) above the prediction, or in other words, the model under predicted by 37.15.
+# When $\text{sq_ft}=14.56$ thousand, the residual indicates the error in the prediction was 37.15 thousand.  Essentially, the true price was 37.15 thousand above the prediction, or in other words, the model under predicted by 37.15 thousand.
 
 # %% [markdown]
 # ### Performance metrics
@@ -261,7 +263,7 @@ training_r2_score = lin_reg_model.score(X_train, y_train)
 print(f"r2 score (coefficient of determination): {training_r2_score*100:.2f}%")
 
 # %% [markdown]
-# On average, the model has an error of about 29.96 (thousand) when make a prediction about a dwelling's price in the training data.
+# On average, the model has an error of about 29.96 thousand when make a prediction about a dwelling's price in the training data.
 #
 # Because the relationship between x and y in the training data is strong, sq_ft explains a large chunk (81.33%) of the changes seen in price.
 
@@ -281,8 +283,8 @@ ax[0].scatter(X_train, y_train, label='Actual')
 ax[0].plot(X_train, training_predictions, color='r', label='predicted', alpha=0.6)
 
 ax[0].set_title(f'Training Data: Actual vs. Predicted Values ($r={train_r_value:.4f}; n={train_sample_size})$')
-ax[0].set_xlabel(x_label + ' (in hundreds)')
-ax[0].set_ylabel(y_label + ' (in thousands)')
+ax[0].set_xlabel(x_label)
+ax[0].set_ylabel(y_label)
 ax[0].legend()
 
 # Second axis - Scatter plot of training residuals
@@ -295,7 +297,7 @@ ax[1].axhline(0, color='r', linestyle='--', alpha=0.6)
 # ax[1].axhline(-training_rmse, alpha=0.4)
 # ax[1].axhline(training_rmse, alpha=0.4)
 
-ax[1].set_xlabel(x_label + ' (in hundreds)')
+ax[1].set_xlabel(x_label)
 ax[1].set_ylabel(f'Error in {y_label}')
 ax[1].set_title(f'Residual Plot ($RMSE={training_rmse:.2f})$')
 
@@ -344,10 +346,10 @@ test_results_df.head()
 # %% [markdown]
 # Calculating residuals on the testing data is the same process as before.  
 #
-# For the first entry in the testing data, $\text{sq_ft}=17.17$, plugging this value into the linear model would result in a prediction of $\hat y = 287.46$.  
+# For the first entry in the testing data, $\text{sq_ft}=17.17$ hundred, plugging this value into the linear model would result in a prediction of $\hat y = 287.46$ thousand.  
 #
 # Using the 
-# the true price of $y=277.64$, the residual is calculated as -9.82, meaning the model over predicted by 9.82 (thousand).
+# the true price of $y=277.64$ thousand, the residual is calculated as -9.82 thousand, meaning the model over predicted by 9.82 thousand.
 
 # %% [markdown]
 # ### Evaluating performance metrics
@@ -386,8 +388,8 @@ ax[0,0].scatter(X_train, y_train, label='Actual')
 ax[0,0].plot(X_train, training_predictions, color='r', label='predicted', alpha=0.6)
 
 ax[0,0].set_title(f'Training Data\n($r={train_r_value:.4f}; n={train_sample_size})$')
-ax[0,0].set_xlabel(x_label + ' (in hundreds)')
-ax[0,0].set_ylabel(y_label + ' (in thousands)')
+ax[0,0].set_xlabel(x_label)
+ax[0,0].set_ylabel(y_label)
 ax[0,0].legend()
 
 ## Bottom left axis - Scatter plot of training residuals
@@ -396,7 +398,7 @@ ax[1,0].scatter(X_train, training_residuals, label='Actual')
 ## Bottom left axis - Horizontal Line representing zero residual
 ax[1,0].axhline(0, color='r', linestyle='--', alpha=0.6)
 
-ax[1,0].set_xlabel(x_label + ' (in hundreds)')
+ax[1,0].set_xlabel(x_label)
 ax[1,0].set_ylabel(f'Error in {y_label}')
 ax[1,0].set_title(f'Residual Plot ($RMSE={training_rmse:.2f})$')
 
@@ -409,8 +411,8 @@ ax[0,1].scatter(X_test, y_test, label='Actual')
 ax[0,1].plot(X_test, test_predictions, color='r', label='predicted')
 
 ax[0,1].set_title(f'Testing Data\n($r={test_r_value:.4f}; n={test_sample_size})$')
-ax[0,1].set_xlabel(x_label + ' (in hundreds)')
-ax[0,1].set_ylabel(y_label + ' (in thousands)')
+ax[0,1].set_xlabel(x_label)
+ax[0,1].set_ylabel(y_label)
 ax[0,1].legend()
 
 ## Bottom right axis - Scatter plot of testing residuals
@@ -420,7 +422,7 @@ ax[1,1].scatter(X_test, test_residuals, label='Actual')
 ax[1,1].axhline(0, color='r', linestyle='--')
 
 ax[1,1].set_title(f'Residual Plot ($RMSE={testing_rmse:.2f})$')
-ax[1,1].set_xlabel(x_label + ' (in hundreds)')
+ax[1,1].set_xlabel(x_label)
 ax[1,1].set_ylabel(f'Error in {y_label}')
 
 plt.tight_layout()
@@ -435,3 +437,5 @@ plt.tight_layout()
 # By visualizing the dataset and seeing the linear trend and because we wanted to predict a quantitative output, linear regression was a reasonable choice to make.  Evaluating the model's performance on training and testing data produced similar results, giving confidence that the model will be able to do well on new and unseen data.  
 #
 # In general, it's quite difficult to get the model right on the first try.  Had the linear regression model performed poorly, it wouldn't have been the end of the world.  Instead, one would have to go back to the drawing board, try a different model, and evaluate its performance.
+
+# %%
