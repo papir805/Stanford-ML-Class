@@ -15,8 +15,6 @@
 
 # %% [markdown]
 # # Introduction
-
-# %% [markdown]
 # The goal of this notebook is to use data to understand the relationship that pressure and temperature play in engine failure.  The type of data you plan on using heavily influences the type of algorithm that's available to use.  Additionally, it's usually a good idea to visualize the data before making any decision about what kind of algorithm to use.
 #
 # First, let's import the necessary modules and then read in the data.
@@ -305,6 +303,5 @@ plt.show()
 
 # %% [markdown]
 # # Conclusion
-
-# %% [markdown]
+#
 # By visualizing the dataset, it was clear that some kind of relationship existing between the pressure and temperature of an engine and whether or not it would fail.  Logistic regression was able to pick up on this relationship and performed reasonably well on testing data, with an overall predictive accuracy of 91.2%.
