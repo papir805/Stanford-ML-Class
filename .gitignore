@@ -3,3 +3,4 @@
 __pycache__/*
 /original_notebooks
 neural_networks/__pycache__/*
+notebooks/neural_network_classifier.ipynb
