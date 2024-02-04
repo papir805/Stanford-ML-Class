@@ -3,10 +3,6 @@
 __pycache__/*
 /original_notebooks
 neural_networks/__pycache__/*
-notebooks/image_processing.py*
-notebooks/mnist_loader.py*
-notebooks/network.py*
-notebooks/plotting.py*
 notebooks/mnist.pkl.gz*
 notebooks/Stanford-ML-Class
 notebooks/__pycache__/*
