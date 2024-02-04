@@ -2,6 +2,7 @@
 .DS_Store
 __pycache__/*
 /original_notebooks
+neural_networks/
 neural_networks/__pycache__/*
 notebooks/mnist.pkl.gz*
 notebooks/Stanford-ML-Class
