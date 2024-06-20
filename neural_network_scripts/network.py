@@ -7,6 +7,10 @@ algorithm for a feedforward neural network.  Gradients are calculated
 using backpropagation.  Note that I have focused on making the code
 simple, easily readable, and easily modifiable.  It is not optimized,
 and omits many desirable features.
+
+Sourced from: 
+Michael A. Nielsen, "Neural Networks and Deep Learning", Determination Press, 2015
+http://neuralnetworksanddeeplearning.com/
 """
 
 #### Libraries

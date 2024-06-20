@@ -2,7 +2,7 @@
 image-processing.py
 ~~~~~~~~~~
 
-
+Sourced from: https://medium.com/@o.kroeger/tensorflow-mnist-and-your-own-handwritten-digits-4d1cd32bbab4
 """
 
 
