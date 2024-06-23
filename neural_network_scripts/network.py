@@ -19,6 +19,8 @@ import random
 
 # Third-party libraries
 import numpy as np
+import matplotlib.pyplot as plt
+from timeit import default_timer
 
 class Network(object):
 
@@ -38,6 +40,8 @@ class Network(object):
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
         self.weights = [np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
+        self.prediction_accuracy = list()
+        self.initial_accuracy = None
 
     def feedforward(self, a):
         """Return the output of the network if ``a`` is input."""
@@ -57,6 +61,14 @@ class Network(object):
         tracking progress, but slows things down substantially."""
         if test_data: n_test = len(test_data)
         n = len(training_data)
+
+        self.prediction_accuracy = list()
+
+        if test_data:
+            self.initial_accuracy = self.evaluate(test_data) / len(test_data)
+            self.prediction_accuracy.append(self.initial_accuracy)
+
+        start = default_timer()
         for j in range(epochs):
             random.shuffle(training_data)
             mini_batches = [
@@ -65,11 +77,21 @@ class Network(object):
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if test_data:
-                print("Epoch {0}: {1} / {2}".format(
-                    j, self.evaluate(test_data), n_test)
+                num_correct = self.evaluate(test_data)
+                accuracy = num_correct / n_test
+                print("Epoch {0}: {1} / {2} = {3}% accuracy".format(
+                    j + 1, num_correct, n_test, round((accuracy * 100), 2)
+                        )
                      )
+                self.prediction_accuracy.append(accuracy)
             else:
-                print("Epoch {0} complete".format(j))
+                print("Epoch {0} complete".format(j + 1))
+            
+        end = default_timer()
+        elapsed_time = round(end - start, 2)
+        elapsed_minutes = elapsed_time // 60
+        elapsed_seconds = (elapsed_time % 60)
+        print("Elapsed time: {0} mins {1:.2f} seconds".format(elapsed_minutes, elapsed_seconds))
 
     def update_mini_batch(self, mini_batch, eta):
         """Update the network's weights and biases by applying
@@ -150,6 +172,24 @@ class Network(object):
         prediction = np.argmax(output)
         
         return prediction
+
+    def plot_test_accuracy(self):
+        epochs = np.arange(len(self.prediction_accuracy))
+        
+        fig, ax = plt.subplots(1, 1)
+        
+        ax.plot(epochs, self.prediction_accuracy,
+               linestyle='--', marker='o', color='blue',
+               markerfacecolor='red')
+
+        y_ticks = ax.get_yticks()
+        y_ticks = np.append(y_ticks, self.initial_accuracy)
+        y_ticks.sort()
+        
+        ax.set_xlabel("epoch")
+        ax.set_ylabel("Prediction Accuracy")
+        ax.set_ylim(0, 1)
+        ax.set_yticks(y_ticks);
 
 #### Miscellaneous functions
 def sigmoid(z):
