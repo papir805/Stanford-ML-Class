@@ -64,9 +64,10 @@ class Network(object):
 
         self.prediction_accuracy = list()
 
-        if test_data:
+        if self.initial_accuracy is None:
             self.initial_accuracy = self.evaluate(test_data) / len(test_data)
-            self.prediction_accuracy.append(self.initial_accuracy)
+        
+        self.prediction_accuracy.append(self.initial_accuracy)
 
         start = default_timer()
         for j in range(epochs):
