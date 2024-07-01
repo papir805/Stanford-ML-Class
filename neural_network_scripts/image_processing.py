@@ -105,5 +105,7 @@ def print_image(image, ax=None):
     
     if image.shape == (784, 1):
         image = image.reshape(28, 28)
-
+    
     plt.imshow(image, cmap='gray')
+    plt.axis('off')
+    
